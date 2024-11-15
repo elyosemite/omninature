@@ -1,0 +1,8 @@
+do
+logs
+incidents
+rc-pf-medico
+venv
+*.env
+__pycache__
+!config/environments/development.env
