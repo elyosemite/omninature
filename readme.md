@@ -1,4 +1,4 @@
-```markdown
+
 # 🛠️ HTTP Request Automation Tool
 
 A Python-based project designed to replace tools like **Postman** and **Insomnia**, allowing you to execute HTTP requests and test endpoints using only scripts. This project simplifies HTTP calls by automating headers, parameters, and request bodies, enabling dynamic endpoint chaining, and handling environment-specific configurations.
@@ -13,31 +13,6 @@ A Python-based project designed to replace tools like **Postman** and **Insomnia
 - 🧩 **Request Bodies in JSON**: Large request payloads stored in `.json` files for easy management.
 - 📝 **Logging**: Detailed logs displayed in the console and stored in files for debugging and tracking.
 - 🧰 **Customizable**: Fully customizable and extendable for any specific API or workflow.
-
----
-
-## 📂 Project Structure
-
-```
-HTTP_Request_Automation_Tool/
-├── src/
-│   ├── auth/                # Scripts for authentication endpoints
-│   ├── quotation/           # Scripts for quotation endpoints
-│   ├── policy/              # Scripts for policy endpoints
-├── requests/                # JSON files for request bodies
-│   ├── quotation/           
-│   ├── policy/
-├── config/                  # Environment configuration
-│   ├── environments/        # .env files for each environment
-│   └── settings.py          # Configuration loader
-├── chaining/                # Endpoint chaining scripts and examples
-├── utils/                   # Utility functions (HTTP, logging, JSON loaders)
-├── tests/                   # Unit and integration tests
-├── .gitignore               # Git ignore rules
-├── requirements.txt         # Python dependencies
-├── README.md                # Project documentation
-└── main.py                  # Entry point for running scripts
-```
 
 ---
 
@@ -174,4 +149,3 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 ---
 
 **Start automating your API tests today! 🚀**
-```
