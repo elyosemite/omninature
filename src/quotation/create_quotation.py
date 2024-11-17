@@ -1,8 +1,10 @@
 from utils.http import make_request
 #from utils.json_loader import load_json
-from config.settings import API_BASE_URL
+#from config.settings import API_BASE_URL
+from config.settings import select_environment
 
 def create_quotation():
+    env = select_environment()
     endpoint = f"http://localhost:49594/api/quotation/6c491aea-64d3-41ba-964d-dc8409189ffb"
     #body = load_json("requests/quotation/create_quotation.json")
     response = make_request("GET", endpoint)

@@ -1,32 +1,61 @@
 import os
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 from loguru import logger
 import sys
+from InquirerPy import inquirer
 
-# Função para carregar o arquivo .env correto com base no ambiente
-def load_environment():
-    env = os.getenv("ENV")  # Checa variável de ambiente do sistema
-    if not env:  # Caso não tenha sido definida, solicita ao usuário
-        env = input("Selecione o ambiente (development, qa, homolog, prod): ").strip().lower()
-        os.environ["ENV"] = env  # Define como variável de ambiente global
+def load_environment(env: str) -> dict:
+    """
+    Carrega variáveis de um arquivo .env específico, baseado no ambiente fornecido.
+
+    Args:
+        env (str): Nome do ambiente ('development', 'qa', 'homolog', 'production').
+
+    Returns:
+        dict: Um dicionário contendo as variáveis carregadas do arquivo .env.
+    """
+    env = env.strip().lower()
+    valid_environments = ["development", "qa", "homolog", "production"]
+
+    if env not in valid_environments:
+        raise ValueError(f"Ambiente inválido: {env}. Escolha entre: {', '.join(valid_environments)}")
 
     dotenv_path = os.path.join("config", "environments", f"{env}.env")
     if not os.path.exists(dotenv_path):
         raise FileNotFoundError(f"Arquivo de configuração {dotenv_path} não encontrado.")
-    
-    load_dotenv(dotenv_path)
+
+    # Carregar as variáveis diretamente do arquivo .env (sem usar os.environ)
+    return dotenv_values(dotenv_path)
+
+
+# Solicitar ao usuário o ambiente, se necessário
+def get_environment_from_user():
+    env = input("Selecione o ambiente (development, qa, homolog, production): ").strip().lower()
     return env
 
-# Carregar as variáveis do ambiente
-ENV = load_environment()
+def select_environment():
+    choices = ['development', 'qa', 'homolog', 'production']
+    answer = inquirer.select(
+        message="Selecione uma opção:",
+        choices=choices,
+    ).execute()
+    return answer
+
+# Carregar o ambiente definido ou pedir ao usuário
+try:
+    selected_env = select_environment()
+    config = load_environment(selected_env)
+except Exception as e:
+    print(f"Erro ao carregar o ambiente: {e}")
+    sys.exit(1)
 
 # Configurações do projeto
-API_BASE_URL = os.getenv("API_BASE_URL")  # URL base da API
-AUTH_TOKEN = os.getenv("AUTH_TOKEN")  # Token de autenticação
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")  # Nível de log padrão
+API_BASE_URL = config.get("API_BASE_URL")
+AUTH_TOKEN = config.get("AUTH_TOKEN")
+LOG_LEVEL = config.get("LOG_LEVEL", "INFO")
+LOG_FILE_PATH = config.get("LOG_FILE_PATH", f"logs/{selected_env}_project.log")
 
 # Configuração do Loguru para log no console e em arquivo
-LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", f"logs/{ENV}_project.log")
 logger.remove()  # Remove qualquer configuração padrão
 
 # Log no console
@@ -46,5 +75,5 @@ logger.add(
 )
 
 # Logs iniciais
-logger.info(f"Ambiente carregado: {ENV}")
+logger.info(f"Ambiente carregado: {selected_env}")
 logger.info(f"API Base URL: {API_BASE_URL}")
